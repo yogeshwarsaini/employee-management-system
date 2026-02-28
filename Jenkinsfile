@@ -78,6 +78,8 @@ pipeline {
             steps {
                 echo '🚀 Docker Compose se deploy ho raha hai...'
                 sh """
+		    cd /home/ubuntu
+		    docker-compose pull
                     docker-compose down || true
                     docker-compose up -d
                 """
