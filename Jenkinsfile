@@ -76,15 +76,16 @@ pipeline {
 
 
         stage('Deploy with Docker Compose') {
-    steps {
-        echo '🚀 Docker Compose se deploy ho raha hai...'
-        sh """
-            docker-compose -f /var/jenkins_home/docker-compose.yml pull
-            docker-compose -f /var/jenkins_home/docker-compose.yml down || true
-            docker-compose -f /var/jenkins_home/docker-compose.yml up -d
-        """
-    }
-}
+          steps {
+            echo '🚀 Docker Compose se deploy ho raha hai...'
+            sh """
+              docker compose -f /var/jenkins_home/docker-compose.yml down || true
+              docker compose -f /var/jenkins_home/docker-compose.yml pull
+              docker compose -f /var/jenkins_home/docker-compose.yml up -d
+            """
+           } 
+         }
+	
 
 	stage('Health Check') {
             steps {
