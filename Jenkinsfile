@@ -74,19 +74,19 @@ pipeline {
             }
         }
 
-        stage('Deploy with Docker Compose') {
-            steps {
-                echo '🚀 Docker Compose se deploy ho raha hai...'
-                sh """
-		    cd /home/ubuntu
-		    docker-compose pull
-                    docker-compose down || true
-                    docker-compose up -d
-                """
-            }
-        }
 
-        stage('Health Check') {
+        stage('Deploy with Docker Compose') {
+    steps {
+        echo '🚀 Docker Compose se deploy ho raha hai...'
+        sh """
+            docker-compose -f /var/jenkins_home/docker-compose.yml pull
+            docker-compose -f /var/jenkins_home/docker-compose.yml down || true
+            docker-compose -f /var/jenkins_home/docker-compose.yml up -d
+        """
+    }
+}
+
+	stage('Health Check') {
             steps {
                 echo '🏥 Health check kar raha hun...'
                 sh """
