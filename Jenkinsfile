@@ -76,15 +76,50 @@ pipeline {
 
 
         stage('Deploy with Docker Compose') {
-          steps {
-            echo '🚀 Docker Compose se deploy ho raha hai...'
-            sh """
-              docker compose -f /var/jenkins_home/docker-compose.yml down || true
-              docker compose -f /var/jenkins_home/docker-compose.yml pull
-              docker compose -f /var/jenkins_home/docker-compose.yml up -d
-            """
-           } 
-         }
+    steps {
+        echo '🚀 Deploy ho raha hai...'
+        sh """
+            # Purane containers band karo
+            docker stop ems-frontend ems-backend ems-mysql || true
+            docker rm ems-frontend ems-backend ems-mysql || true
+            
+            # Network banao
+            docker network create ems-network || true
+            
+            # MySQL start karo
+            docker run -d \
+                --name ems-mysql \
+                --network ems-network \
+                -e MYSQL_ROOT_PASSWORD=root123 \
+                -e MYSQL_DATABASE=employeedb \
+                -p 3306:3306 \
+                mysql:8.0
+            
+            # 20 second wait karo MySQL ready hone do
+            sleep 20
+            
+            # Backend start karo
+            docker run -d \
+                --name ems-backend \
+                --network ems-network \
+                -e DB_HOST=ems-mysql \
+                -e DB_USER=root \
+                -e DB_PASSWORD=root123 \
+                -e DB_NAME=employeedb \
+                -e JWT_SECRET=myjwtsecret123 \
+                -e PORT=5000 \
+                -p 5000:5000 \
+                yogismash/ems-backend:latest
+            
+            # Frontend start karo
+            docker run -d \
+                --name ems-frontend \
+                --network ems-network \
+                -p 3000:80 \
+                yogismash/ems-frontend:latest
+        """
+    }
+}
 	
 
 	stage('Health Check') {
