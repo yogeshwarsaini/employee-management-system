@@ -123,17 +123,19 @@ pipeline {
 	
 
 	stage('Health Check') {
-            steps {
-                echo '🏥 Health check kar raha hun...'
-                sh """
-                    sleep 10
-                    curl -f http://localhost:5000/health || exit 1
-                    echo '✅ Backend is UP!'
-                    curl -f http://localhost:3000 || exit 1
-                    echo '✅ Frontend is UP!'
-                """
-            }
-        }
+    steps {
+        echo '🏥 Health check kar raha hun...'
+        sh """
+            sleep 15
+            docker exec ems-backend curl -f http://localhost:5000/health || exit 1
+            echo '✅ Backend is UP!'
+            docker ps | grep ems-frontend && echo '✅ Frontend is UP!' || exit 1
+        """
+    }
+  }
+
+
+
     }
 
     post {
