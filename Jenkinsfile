@@ -6,7 +6,7 @@ pipeline {
         BACKEND_IMAGE = "${DOCKERHUB_USERNAME}/ems-backend"
         FRONTEND_IMAGE = "${DOCKERHUB_USERNAME}/ems-frontend"
         IMAGE_TAG = "${GIT_COMMIT}"
-        EC2_IP = "13.234.116.156"
+        EC2_IP = "13.201.1.113"
     }
 
     stages {
@@ -127,7 +127,7 @@ pipeline {
         echo '🏥 Health check kar raha hun...'
         sh """
             sleep 15
-            curl -f http://13.234.116.156:5000/health || exit 1
+            curl -f http://13.201.1.113:5000/health || exit 1
             echo '✅ Backend is UP!'
             docker ps | grep ems-frontend && echo '✅ Frontend is UP!' || exit 1
         """
