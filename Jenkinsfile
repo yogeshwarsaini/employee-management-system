@@ -127,12 +127,12 @@ pipeline {
         echo '🏥 Health check kar raha hun...'
         sh """
             sleep 15
-            docker exec ems-backend curl -f http://localhost:5000/health || exit 1
+            curl -f http://13.234.116.156:5000/health || exit 1
             echo '✅ Backend is UP!'
             docker ps | grep ems-frontend && echo '✅ Frontend is UP!' || exit 1
         """
     }
-  }
+}
 
 
 
